@@ -1,0 +1,374 @@
+$black: rgb(0, 0, 0);
+$light-brown: rgb(66, 33, 0);
+$dark-brown: rgb(75, 13, 8);
+$dark-orange: rgb(200, 66, 0);
+$marigold: rgb(209, 229, 45);
+$hunter-green: rgb(33, 99, 0);
+
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.hyphen-break {
+    word-break: break-all;
+    word-break: break-word;
+}
+
+.flex-quarter {
+    flex-shrink: 1;
+    flex-grow: 1;
+    flex-basis: 25%;
+}
+
+
+body {
+    margin: 0;
+    font-size: 12px;
+}
+
+h1,
+h3,
+h5,
+label {
+    font-family: 'Arvo', serif
+}
+
+h2,
+h4,
+h6 {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+h1,
+h2 {
+    font-weight: 700
+}
+
+button,
+input[type="submit"] {
+    font-family: 'Ubuntu', sans-serif;
+    position: relative;
+    z-index: 10000;
+    outline: 0;
+    border: 2px solid #222;
+    border-radius: 8px;
+    background: $marigold;
+    padding: .7rem;
+    font-size: 2rem;
+
+    &.disappear {
+        animation: disappear 1s linear forwards;
+    }
+}
+
+input[type="text"] {
+    width: 16rem;
+    height: 1.8rem;
+    margin: 1rem;
+    font-size: 1.4rem;
+    padding: .4rem .5rem;
+    border: 0;
+    border-bottom: thin solid #DDD;
+    transition: box-shadow .1s linear;
+
+    &:focus {
+        outline: 0;
+        box-shadow: inset 0 0 3px rgb(220, 220, 220);
+    }
+}
+
+input[type="radio"] {
+    visibility: hidden;
+    order: -2;
+
+    &:checked {
+
+        &~.newRadio {
+            background: #208998;
+        }
+
+        &~.pulse {
+            opacity: 1;
+            height: 1000vh;
+            width: 500vw;
+            margin: -500vh 0 0 -250vw;
+        }
+    }
+}
+
+#startScreen {
+    width: 100%;
+    display: flex;
+    background: $dark-brown;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#cardTable {
+    display: flex;
+    flex-direction: column;
+    border: 4px solid $dark-brown;
+    background: $hunter-green;
+    min-height: 100vh;
+}
+
+.card {
+    background: #FFF;
+    border: thin solid black;
+    text-align: center;
+    border-radius: 5px;
+    font-size: .5rem;
+    flex: 0 0 67px;
+    margin: .5rem .2rem;
+    position: relative;
+    perspective: 5px;
+    transform-style: preserve-3d;
+
+    &::after {
+        content: '';
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        border-radius: 5px;
+        background: $marigold;
+        backface-visibility: hidden;
+        perspective: 2px;
+    }
+
+    h2 {
+        font-family: 'Arvo', serif;
+        font-size: 1.4rem;
+        margin-top: 3px;
+        margin-bottom: 3px
+    }
+
+    h2,
+    h3 {
+        transform: rotateX(180deg);
+    }
+}
+
+.cardNumber {
+    font-size: 11px;
+    align-self: center;
+    font-weight: 500;
+}
+
+.topLeftIcon {
+    align-self: flex-start;
+
+    .cardNumber {
+        margin-right: .075rem;
+        margin-left: .3rem;
+    }
+}
+
+#thisHand {
+    flex: 1 1 auto;
+}
+
+.trickContainer {
+    flex: 0 0 8rem;
+    position: relative;
+}
+
+.trickWinner {
+    position: absolute;
+    animation: fadein 1s;
+    font-size: 1.3rem;
+    font-family: 'Ubuntu', sans-serif;
+    background: rgba(160, 200, 150, .9);
+    top: 30%;
+    right: 1.5rem;
+    max-width: 70%;
+}
+
+.bottomRightIcon {
+    align-self: flex-end;
+
+    &>svg {
+        margin-left: .1rem;
+        margin-right: .3rem;
+    }
+}
+
+.cardIcon {
+    align-items: center;
+}
+
+.hand {
+    display: flex;
+    margin: .2rem 0;
+
+    h1 {
+        align-self: center;
+    }
+}
+
+.handCards {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    margin: .2rem 2rem;
+    justify-content: center;
+    background-color: hsla(10, 60%, 75%, .8);
+    padding: 20px;
+}
+
+#cardConfigs {
+    font-family: 'Arvo';
+    z-index: 30;
+    overflow: hidden;
+
+    label {
+        font-size: 1.3rem
+    }
+}
+
+
+#allCardsConfig {
+    position: relative;
+    z-index: 30;
+}
+
+#cardGrid {
+    flex-wrap: wrap;
+}
+
+.introConfig {
+    display: flex;
+    flex: 1 1 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 40;
+
+    &>input,
+    &>label {
+        z-index: 1000;
+        position: relative;
+    }
+}
+
+.inputContainer {
+    display: flex;
+}
+
+.newRadio {
+    order: -1;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 .2rem #208998;
+}
+
+.pulse {
+    border-radius: 50%;
+    position: fixed;
+    height: 0;
+    width: 0;
+    opacity: .3;
+    z-index: 2;
+    transition: all 1s linear;
+    top: 51vh;
+    left: 51vw;
+
+    &.pulsing {
+        animation: outerBackgroundPulsing 1s linear forwards;
+    }
+}
+
+.innerPulse {
+    border-radius: 50%;
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: thin solid #FFF;
+    opacity: 0;
+    /** transition-property: height .5s, height .5s, height .5s, height .5s; */
+    top: 51vh;
+    left: 51vw;
+
+    &.innerPulsing {
+        animation-delay: 1s;
+        animation: innerBorderPulse .6s linear;
+    }
+}
+
+.element {
+    background-color: #ffbb52;
+}
+
+@keyframes innerBorderPulse {
+    0% {
+        border: thin solid;
+        opacity: 0;
+    }
+
+    ;
+
+    20% {
+        border-color: #FFF;
+        opacity: .8;
+    }
+
+    ;
+
+    80% {
+        opacity: 1;
+        border-color: #FFF;
+    }
+
+    ;
+
+    100% {
+        width: 5rem;
+        height: 5rem;
+        opacity: 0;
+        z-index: 0;
+    }
+
+    ;
+}
+
+@keyframes outerBackgroundPulsing {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: .8;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        top: -100vh;
+        left: -50vw;
+        height: 300vh;
+        width: 200vw;
+        opacity: .8;
+    }
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
