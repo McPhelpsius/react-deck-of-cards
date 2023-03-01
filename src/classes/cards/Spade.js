@@ -1,6 +1,6 @@
 import Card from "../Card";
 
-const Spade = (props) => {
+const Spade = (cardData) => {
   const suitSVG = <svg width="25" height="25" >
     <circle cx="17" cy="14" r="5" fill="black" />
     <circle cx="7" cy="14" r="5" fill="black" />
@@ -15,7 +15,13 @@ const Spade = (props) => {
     <polygon points="6,11 4,7 2,11" fill="black" />
   </svg>;
 
-  return (<Card value={props.value} name={props.name} smallSVG={smallSVG} suitSVG={suitSVG} suit="Spades" />)
+  return (
+    <Card name={cardData.name}
+      value={cardData.value}
+      smallSVG={smallSVG}
+      suitSVG={suitSVG}
+      suit="Spades" />
+  );
 }
 
 export default Spade;

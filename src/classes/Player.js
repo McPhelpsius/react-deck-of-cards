@@ -1,10 +1,9 @@
 import { React, Component } from "react";
-import Card from "./Card";
 
 class Player extends Component {
     constructor(props) {
         super();
-
+        console.log('PROPS', props)
         this.state = {
             gameInstance: props.gameInstance,
             name: props.name,
@@ -22,7 +21,6 @@ class Player extends Component {
     receiveCard(card) {
         // debugger;
         if (!this.state.mounted) {
-            console.log('before mount', this.state);
             this.state.cards[this.state.cards.length] = card;
         } else {
             this.setState({ ...this.state, cards: [...this.state.cards, card] })
@@ -43,7 +41,7 @@ class Player extends Component {
         //         console.log(that.gameInstance.discardPile);
         //         console.log(that.name + 'is done');
 
-        //         //that.myTurn will be set to false elsewhere in a future version that allows multiple cards to be played
+        //        //that.myTurn will be set to false elsewhere in a future version that allows multiple cards to be played
         //         that.myTurn = false;
         //         that.gameInstance.nextPlayer();
         //     }
@@ -64,7 +62,7 @@ class Player extends Component {
     render() {
         return (
             <div className="handCards flex">
-                <h4>{this.name}</h4>
+                <h4>{this.state.name}</h4>
                 {this.state.cards}
             </div>);
         // {this.state.cards.map((card, c) => <Card key={c} name={card.name} suit={card.suit} />)}

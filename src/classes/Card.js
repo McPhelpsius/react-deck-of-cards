@@ -24,8 +24,7 @@ class Card extends Component {
         const card = event.target;
         if (!this.state.dealt) {
             const tl = gsap.timeline();
-            tl.to(card, { y: 200, rotationY: 180, rotationZ: 180, duration: 0.3 });
-            tl.to(card, { y: '80vh', x: '70vw', rotateZ: 1980, delay: 1 });
+            tl.to(card, { rotationY: 180, rotationZ: 180, duration: 0.3 });
         }
         else if (!this.state.played) {
             const tl = gsap.timeline();

@@ -1,10 +1,5 @@
-import Spade from './cards/Spade';
-import Heart from './cards/Heart';
-import Club from './cards/Club';
-import Diamond from './cards/Diamond';
+import createCard from '../factories/cardFactory';
 import Player from './Player';
-
-import ErrorBoundary from './ErrorBoundary';
 import { Component } from 'react';
 
 class Game extends Component {
@@ -19,16 +14,17 @@ class Game extends Component {
             currentTrickCards: [],
             numberOfPlayers: 2,
             playerNames: ['Alan', 'Bradley'],
-            players: [new Player({ name: 'Alan' }), new Player({ name: 'Bradley' })],
+            players: [],
             trickIndex: 0,
-            deck: this.prepareDeck()
+            deck: this.prepareDeck(),
+            isFormVisible: true
         }
 
         this.initiate = this.initiate.bind(this);
         this.begin = this.begin.bind(this);
         this.shuffle = this.shuffle.bind(this);
         this.deal = this.deal.bind(this);
-        this.enterPlayers = this.enterPlayers.bind(this);
+        this.getPlayerNamesFromForm = this.getPlayerNamesFromForm.bind(this);
         this.updatePlayerNumber = this.updatePlayerNumber.bind(this);
         this.updatePlayerName = this.updatePlayerName.bind(this);
     }
@@ -40,7 +36,12 @@ class Game extends Component {
     prepareDeck() {
         // cardNames is available
         // this.gameSettings = this.configureDeck();
-        const cardNames = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
+        const cardValues = [
+            { name: 'Ace', value: 1 }, { name: '2', value: 2 }, { name: '3', value: 3 },
+            { name: '4', value: 4 }, { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
+            { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
+            { name: 'Jack', value: 11 }, { name: 'Queen', value: 12 }, { name: 'King', value: 13 }];
+
         const suits = ['Heart', 'Spade', 'Diamond', 'Club'];
         // if (this.gameSettings.aceHigh === "true") {
         //     const ace = cardNames.shift();
@@ -50,8 +51,8 @@ class Game extends Component {
         // let cardsUsed = this.gameSettings.cards;
 
         const cards = suits.map((suit) => {
-            return cardNames.map((name) => {
-                const obj = { name, suit };
+            return cardValues.map((card) => {
+                const obj = { ...card, suit };
                 return obj;
             });
         }).flat();
@@ -92,8 +93,9 @@ class Game extends Component {
 
     initiate(event) {
         event.preventDefault();
-        // this.enterPlayers();
-        // debugger;
+        debugger;
+        const playerNames = this.getPlayerNamesFromForm([...event.target.elements]);
+        this.setState({ ...this.state, playerNames, isFormVisible: false });
     }
 
     begin() {
@@ -101,15 +103,10 @@ class Game extends Component {
         // this.beginAHand();
     }
 
-    enterPlayers() {
-        // this.numberOfPlayers = this.gameSettings.numberOfPlayers;
-        let players = [];
-        for (let player = 0; player < this.state.numberOfPlayers; player++) {
-            let currentPlayer = new Player({ name: this.state.playerNames[player], gameInstance: this });
-            players.push(currentPlayer);
-        }
-
-        this.setState({ ...this.state, players });
+    getPlayerNamesFromForm(formElements) {
+        return formElements
+            .filter(element => element.type === "text")
+            .map(input => input.value);
     }
 
     updatePlayerNumber(event) {
@@ -151,11 +148,12 @@ class Game extends Component {
         let p = 0;
         for (let card = 0; card < this.state.deck.length; card++) {
             if (!dealtCards[p]) dealtCards[p] = [];
+            const cardObject = createCard(this.state.deck[card]);
 
-            dealtCards[p].push(this.state.deck[card]);
-
+            dealtCards[p].push(cardObject);
+            p++;
             // there should be one array for each player
-            if (p++ === playersCount) {
+            if (p === playersCount) {
                 p = 0;
             }
         }
@@ -164,8 +162,7 @@ class Game extends Component {
         // dealtCards with same index as player will be the cards prop for each player
         let players = [];
         for (let player = 0; player < playersCount; player++) {
-            console.log(players, dealtCards[player]);
-            players[players.length] = new Player({ name: this.state.playerNames[player], gameInstance: this, cards: dealtCards[player] });
+            players[players.length] = { name: this.state.playerNames[player], gameInstance: this, cards: dealtCards[player] };
         }
         // this.buildHands();
         // for (let x = 0; x < this.state.players.length; x++) {
@@ -281,23 +278,28 @@ class Game extends Component {
     }
 
     render() {
-        return (<div id="cardTable">
-            <form id="playersListForm" onSubmit={this.initiate}>
-                <input type="number" value={this.state.numberOfPlayers} onChange={this.updatePlayerNumber} step="1" />
+        // const renderPlayers = <div id="thisHand" className="flex">
+        //     {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}>{player}</div>)}
+        // </div>;            
 
-                {this.state.playerNames.map((name, index) => <input key={"player-" + index} data-key={index} value={name} type="text" onChange={this.updatePlayerName} />)}
-                <button type="submit">Submit</button>
-            </form>
-            <button onClick={this.begin}>Begin</button>
-            <div className="flex">
-
-                <ErrorBoundary>
+        return (
+            <div id="cardTable">
+                {this.state.isFormVisible ?
+                    <form id="playersListForm" onSubmit={this.initiate}>
+                        <input type="number" value={this.state.numberOfPlayers} onChange={this.updatePlayerNumber} step="1" />
+                        {this.state.playerNames.map((name, index) => <input key={"player-" + index} data-key={index} value={name} type="text" onChange={this.updatePlayerName} />)}
+                        <button type="submit">Submit</button>
+                    </form>
+                    : null
+                }
+                <button onClick={this.begin}>Begin</button>
+                <div className="flex">
                     <div id="thisHand" className="flex">
-                        {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player name={player.name} /></div>)}
+                        {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player name={player.name} gameInstance={this} cards={player.cards} /></div>)}
                     </div>
-                </ErrorBoundary>
+                </div>
             </div>
-        </div>)
+        );
     }
 
 }

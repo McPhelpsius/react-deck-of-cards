@@ -1,6 +1,6 @@
 import Card from "../Card";
 
-const Club = (props) => {
+const Club = (cardData) => {
     const smallSVG = <svg width="12" height="11">
         <circle cx="9" cy="6" r="3" fill="black" />
         <circle cx="3" cy="6" r="3" fill="black" />
@@ -15,11 +15,10 @@ const Club = (props) => {
         <polygon points="17,22 12,9 7,22" fill="black" />
     </svg>;
 
-    return (<Card name={props.name}
-        value={props.value}
-        smallSVG={smallSVG}
-        suitSVG={suitSVG}
-        suit="Club" />);
+    return (
+        <Card name={cardData.name} value={cardData.value}
+            smallSVG={smallSVG} suitSVG={suitSVG} suit="Club" />
+    );
 }
 
 export default Club;
