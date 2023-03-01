@@ -20,7 +20,8 @@ const Spade = (cardData) => {
       value={cardData.value}
       smallSVG={smallSVG}
       suitSVG={suitSVG}
-      suit="Spades" />
+      clickHandler={cardData.clickHandler}
+      suit={cardData.suit} />
   );
 }
 

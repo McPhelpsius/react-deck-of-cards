@@ -5,17 +5,17 @@ import Diamond from '../classes/cards/Diamond';
 import Card from '../classes/Card';
 
 export default function createCard(cardData) {
-  const { value, name, suit } = cardData;
+  const { suit } = cardData;
   switch (suit) {
     case 'Diamond':
-      return Diamond({ value, name });
+      return Diamond(cardData);
     case 'Club':
-      return Club({ value, name });
+      return Club(cardData);
     case 'Heart':
-      return Heart({ value, name });
+      return Heart(cardData);
     case 'Spade':
-      return Spade({ value, name });
+      return Spade(cardData);
     default:
-      return new Card({ value, name });
+      return new Card(cardData);
   }
 }

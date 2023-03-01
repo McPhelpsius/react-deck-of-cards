@@ -1,4 +1,4 @@
-import createCard from '../factories/cardFactory';
+import createCard from '../factories/cardFactory.js';
 import Player from './Player';
 import { Component } from 'react';
 
@@ -10,12 +10,12 @@ class Game extends Component {
             removed: [],
             discardPile: [],
             handCounter: 0,
-            currentHandCards: [],
             currentTrickCards: [],
             numberOfPlayers: 2,
             playerNames: ['Alan', 'Bradley'],
             players: [],
             trickIndex: 0,
+            trickCards: [],
             deck: this.prepareDeck(),
             isFormVisible: true
         }
@@ -93,7 +93,7 @@ class Game extends Component {
 
     initiate(event) {
         event.preventDefault();
-        debugger;
+
         const playerNames = this.getPlayerNamesFromForm([...event.target.elements]);
         this.setState({ ...this.state, playerNames, isFormVisible: false });
     }
@@ -144,13 +144,12 @@ class Game extends Component {
 
         // deal cards to an array of arrays
         let dealtCards = [];
-        debugger;
+
         let p = 0;
         for (let card = 0; card < this.state.deck.length; card++) {
             if (!dealtCards[p]) dealtCards[p] = [];
-            const cardObject = createCard(this.state.deck[card]);
-
-            dealtCards[p].push(cardObject);
+            
+            dealtCards[p].push(this.state.deck[card]);
             p++;
             // there should be one array for each player
             if (p === playersCount) {
@@ -162,7 +161,8 @@ class Game extends Component {
         // dealtCards with same index as player will be the cards prop for each player
         let players = [];
         for (let player = 0; player < playersCount; player++) {
-            players[players.length] = { name: this.state.playerNames[player], gameInstance: this, cards: dealtCards[player] };
+            const playerCards = dealtCards[player].map(card => { return { ...card, playerId: player } })
+            players[players.length] = { id: player, name: this.state.playerNames[player], gameInstance: this, cards: dealtCards[player] };
         }
         // this.buildHands();
         // for (let x = 0; x < this.state.players.length; x++) {
@@ -172,33 +172,22 @@ class Game extends Component {
     }
 
     clearHands() {
+        const players = [];
 
-        for (let p = 0; p < this.players.length; p++) {
-            if (this.players[p].cards) {
-                this.players[p].cards = [];
-            }
+        for (let p = 0; p < this.state.players.length; p++) {
+            const player = this.state.players[p];
 
-            let handCardElement = document.getElementById(this.players[p].name).querySelector('.handCards');
+            player.clearHand();
 
-            if (handCardElement.querySelectorAll('.cards')) {
-                handCardElement.innerHTML = '';
-            }
+            players[players.length] = player;
         }
+
+        this.setState({ ...this.state, players });
     }
 
     shuffle() {
         const deck = this.state.deck.sort(function () { return 0.5 - Math.random() });
         this.setState({ ...this.state, deck });
-    }
-
-    buildHands() {
-        for (let h = 0; h < this.state.players.length; h++) {
-            let thisGuy = this.players[h];
-            let handCardElement = document.getElementById(thisGuy.name).querySelector('.handCards');
-            for (let c = 0; c < thisGuy.cards.length; c++) {
-                handCardElement.innerHTML += thisGuy.cards[c].template();
-            }
-        }
     }
 
     beginAHand() {
@@ -214,10 +203,12 @@ class Game extends Component {
 
     playATrick() {
         // let one player play a card at a time
-        var trickContainer = document.createElement("div");
-        trickContainer.className = "trickContainer flex";
-        document.getElementById('thisHand').appendChild(trickContainer);
-        this.players[0].takeTurn();
+
+        this.state.players[0].takeTurn();
+    }
+
+    acceptCard(card) {
+        this.setState({...this.state, trickCards: [...this.state.trickCards, card]});
     }
 
     whoWon() {
@@ -293,10 +284,11 @@ class Game extends Component {
                     : null
                 }
                 <button onClick={this.begin}>Begin</button>
+                <div id="thisHand" className="flex">
+                {this.state.trickCards.map(card => createCard(card))}
+                </div>
                 <div className="flex">
-                    <div id="thisHand" className="flex">
-                        {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player name={player.name} gameInstance={this} cards={player.cards} /></div>)}
-                    </div>
+                    {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player name={player.name} gameInstance={this} cards={player.cards} /></div>)}
                 </div>
             </div>
         );
@@ -306,5 +298,4 @@ class Game extends Component {
 
 
 export default Game;
-// the trick containers exist, place cards inside them
 

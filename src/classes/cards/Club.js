@@ -16,8 +16,8 @@ const Club = (cardData) => {
     </svg>;
 
     return (
-        <Card name={cardData.name} value={cardData.value}
-            smallSVG={smallSVG} suitSVG={suitSVG} suit="Club" />
+        <Card name={cardData.name} value={cardData.value} smallSVG={smallSVG}
+        suitSVG={suitSVG} suit={cardData.suit} clickHandler={cardData.clickHandler} />
     );
 }
 

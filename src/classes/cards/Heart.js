@@ -16,7 +16,8 @@ const Heart = (cardData) => {
     value={cardData.value}
     smallSVG={smallSVG}
     suitSVG={suitSVG}
-    suit="Hearts" />);
+    clickHandler={cardData.clickHandler}
+    suit={cardData.suit} />);
 }
 
 export default Heart;

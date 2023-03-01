@@ -1,16 +1,18 @@
 import { React, Component } from "react";
+import createCard from '../factories/cardFactory';
 
 class Player extends Component {
     constructor(props) {
         super();
-        console.log('PROPS', props)
         this.state = {
+            id: props.playerId,
             gameInstance: props.gameInstance,
             name: props.name,
             cards: props.cards,
-            myTurn: false,
-            mounted: false
+            myTurn: true
         }
+        
+        this.playCard = this.playCard.bind(this);
     }
 
     componentDidMount() {
@@ -19,12 +21,15 @@ class Player extends Component {
     }
 
     receiveCard(card) {
-        // debugger;
         if (!this.state.mounted) {
             this.state.cards[this.state.cards.length] = card;
         } else {
             this.setState({ ...this.state, cards: [...this.state.cards, card] })
         }
+    }
+
+    clearHand() {
+        this.setState({ ...this.state, cards: [] });
     }
 
     readyCards() {
@@ -48,12 +53,25 @@ class Player extends Component {
         // }, false);
     }
 
-    playCard(card, cards, cardsHTML) {
-        let thisHandCard = cardsHTML.removeChild(cards.item([].indexOf.call(cards, card)));
-        this.gameInstance.tablePlayedCards.appendChild(thisHandCard);
-        let currentTrickContainer = document.getElementById('thisHand').querySelectorAll('.trickContainer')[this.gameInstance.trickIndex];
-        currentTrickContainer.appendChild(thisHandCard);
-        return this.cards.splice([].indexOf.call(cards, card), 1)[0];
+    playCard(clickedCard) {
+        // click on card
+        // splice card from this.state.cards to remove from array and return
+        // trigger next player to play a card
+        // let currentTrickContainer = document.getElementById('thisHand').querySelectorAll('.trickContainer')[this.gameInstance.trickIndex];
+        // currentTrickContainer.appendChild(thisHandCard);
+        
+        const cardArray = this.state.cards;
+        const selectedCard = cardArray.findIndex(card => {
+            return card.suit === clickedCard.props.suit && card.value === clickedCard.props.value
+        });
+
+        console.log(selectedCard);
+        const playedCard = cardArray.splice(selectedCard, 1)[0];
+
+        this.setState({...this.state, cards: cardArray});
+
+        this.state.gameInstance.acceptCard(playedCard);
+        return playedCard;
     }
 
     takeTurn() {
@@ -61,9 +79,11 @@ class Player extends Component {
     }
     render() {
         return (
-            <div className="handCards flex">
+            <div className="flex-column">
                 <h4>{this.state.name}</h4>
-                {this.state.cards}
+                <div className="hand-cards">
+                {this.state.cards.map(card => createCard({...card, clickHandler: this.playCard}))}
+                </div>
             </div>);
         // {this.state.cards.map((card, c) => <Card key={c} name={card.name} suit={card.suit} />)}
     }

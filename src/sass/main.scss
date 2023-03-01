@@ -126,13 +126,13 @@ input[type="radio"] {
     border-radius: 5px;
     font-size: .5rem;
     flex: 0 0 67px;
-    margin: .5rem .2rem;
+    margin: .5rem 0 .5rem .2rem;
     position: relative;
     perspective: 5px;
-    transform-style: preserve-3d;
+    // transform-style: preserve-3d;
 
     &::after {
-        content: '';
+        // content: '';
         width: 100%;
         height: 100%;
         position: absolute;
@@ -142,7 +142,7 @@ input[type="radio"] {
         right: 0;
         z-index: 1;
         border-radius: 2px;
-        background-image: url('../assets/boba-fett.png');
+        // background-image: url('../assets/boba-fett.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -157,10 +157,10 @@ input[type="radio"] {
         margin-bottom: 3px
     }
 
-    h2,
-    h3 {
-        transform: rotateX(180deg);
-    }
+    // h2,
+    // h3 {
+    //     transform: rotateX(180deg);
+    // }
 }
 
 .cardNumber {
@@ -170,8 +170,7 @@ input[type="radio"] {
 }
 
 .top-right-icon {
-    align-self: flex-start;
-    rotate: 180deg;
+    align-self: flex-end;
 
     .cardNumber {
         margin-right: .075rem;
@@ -181,6 +180,19 @@ input[type="radio"] {
     &>svg {
         margin-right: .3rem;
     }
+}
+
+.bottom-left-icon {
+    align-self: flex-start;
+
+    &>svg {
+        margin-left: .1rem;
+        margin-right: .3rem;
+    }
+}
+
+.card-icon {
+    align-items: center;
 }
 
 #thisHand {
@@ -203,18 +215,7 @@ input[type="radio"] {
     max-width: 70%;
 }
 
-.bottom-left-icon {
-    align-self: flex-end;
 
-    &>svg {
-        margin-left: .1rem;
-        margin-right: .3rem;
-    }
-}
-
-.card-icon {
-    align-items: center;
-}
 
 .hand {
     display: flex;
@@ -225,7 +226,7 @@ input[type="radio"] {
     }
 }
 
-.handCards {
+.hand-cards {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
