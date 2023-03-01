@@ -25,7 +25,7 @@ class Game extends Component {
         this.shuffle = this.shuffle.bind(this);
         this.deal = this.deal.bind(this);
         this.getPlayerNamesFromForm = this.getPlayerNamesFromForm.bind(this);
-        this.updatePlayerNumber = this.updatePlayerNumber.bind(this);
+        this.updateNumberOfPlayers = this.updateNumberOfPlayers.bind(this);
         this.updatePlayerName = this.updatePlayerName.bind(this);
     }
     componentDidMount() {
@@ -109,8 +109,8 @@ class Game extends Component {
             .map(input => input.value);
     }
 
-    updatePlayerNumber(event) {
-        let numberOfPlayers = event.target.value;
+    updateNumberOfPlayers(event) {
+        let numberOfPlayers = parseFloat(event.target.value);
         let playerNames = this.state.playerNames;
         let players = this.state.players;
 
@@ -144,7 +144,7 @@ class Game extends Component {
 
         // deal cards to an array of arrays
         let dealtCards = [];
-
+        debugger;
         let p = 0;
         for (let card = 0; card < this.state.deck.length; card++) {
             if (!dealtCards[p]) dealtCards[p] = [];
@@ -286,7 +286,7 @@ class Game extends Component {
             <div id="cardTable">
                 {this.state.isFormVisible ?
                     <form id="playersListForm" onSubmit={this.initiate}>
-                        <input type="number" value={this.state.numberOfPlayers} onChange={this.updatePlayerNumber} step="1" />
+                        <input type="number" value={this.state.numberOfPlayers} onChange={this.updateNumberOfPlayers} step="1" />
                         {this.state.playerNames.map((name, index) => <input key={"player-" + index} data-key={index} value={name} type="text" onChange={this.updatePlayerName} />)}
                         <button type="submit">Submit</button>
                     </form>

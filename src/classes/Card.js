@@ -39,12 +39,12 @@ class Card extends Component {
 
     render() {
         return <div onClick={this.deal} className="card flex-column">
-            <h3 className="topLeftIcon cardIcon flex">
+            <h3 className="top-right-icon card-icon flex">
                 <div className="cardNumber">{this.state.icon}</div>
                 {this.state.smallSVG}
             </h3>
             <h2>{this.state.icon}</h2>
-            <h3 className="bottomRightIcon cardIcon flex">
+            <h3 className="bottom-left-icon card-icon flex">
                 <div className="cardNumber">{this.state.icon}</div>
                 {this.state.smallSVG}
             </h3>

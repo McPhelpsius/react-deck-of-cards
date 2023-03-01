@@ -169,12 +169,17 @@ input[type="radio"] {
     font-weight: 500;
 }
 
-.topLeftIcon {
+.top-right-icon {
     align-self: flex-start;
+    rotate: 180deg;
 
     .cardNumber {
         margin-right: .075rem;
         margin-left: .3rem;
+    }
+
+    &>svg {
+        margin-right: .3rem;
     }
 }
 
@@ -198,7 +203,7 @@ input[type="radio"] {
     max-width: 70%;
 }
 
-.bottomRightIcon {
+.bottom-left-icon {
     align-self: flex-end;
 
     &>svg {
@@ -207,7 +212,7 @@ input[type="radio"] {
     }
 }
 
-.cardIcon {
+.card-icon {
     align-items: center;
 }
 
