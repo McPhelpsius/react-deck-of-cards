@@ -41,7 +41,7 @@ label {
 h2,
 h4,
 h6 {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: sans-serif;
 }
 
 h1,
@@ -51,7 +51,7 @@ h2 {
 
 button,
 input[type="submit"] {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: sans-serif;
     position: relative;
     z-index: 10000;
     outline: 0;
@@ -195,8 +195,10 @@ input[type="radio"] {
     align-items: center;
 }
 
-#thisHand {
+#this-hand {
     flex: 1 1 auto;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .trickContainer {
@@ -208,7 +210,7 @@ input[type="radio"] {
     position: absolute;
     animation: fadein 1s;
     font-size: 1.3rem;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: sans-serif;
     background: rgba(160, 200, 150, .9);
     top: 30%;
     right: 1.5rem;

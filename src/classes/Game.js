@@ -14,8 +14,8 @@ class Game extends Component {
             numberOfPlayers: 2,
             playerNames: ['Alan', 'Bradley'],
             players: [],
-            trickIndex: 0,
-            trickCards: [],
+            currentTrickIndex: 0,
+            tricksPlayed: [],
             deck: this.prepareDeck(),
             isFormVisible: true
         }
@@ -27,6 +27,8 @@ class Game extends Component {
         this.getPlayerNamesFromForm = this.getPlayerNamesFromForm.bind(this);
         this.updateNumberOfPlayers = this.updateNumberOfPlayers.bind(this);
         this.updatePlayerName = this.updatePlayerName.bind(this);
+        this.playATrick = this.playATrick.bind(this);
+
     }
     componentDidMount() {
         this.table = document.getElementById('cardTable');
@@ -100,7 +102,6 @@ class Game extends Component {
 
     begin() {
         this.deal();
-        // this.beginAHand();
     }
 
     getPlayerNamesFromForm(formElements) {
@@ -148,7 +149,7 @@ class Game extends Component {
         let p = 0;
         for (let card = 0; card < this.state.deck.length; card++) {
             if (!dealtCards[p]) dealtCards[p] = [];
-            
+
             dealtCards[p].push(this.state.deck[card]);
             p++;
             // there should be one array for each player
@@ -162,7 +163,7 @@ class Game extends Component {
         let players = [];
         for (let player = 0; player < playersCount; player++) {
             const playerCards = dealtCards[player].map(card => { return { ...card, playerId: player } })
-            players[players.length] = { id: player, name: this.state.playerNames[player], gameInstance: this, cards: dealtCards[player] };
+            players[players.length] = new Player({ id: player, name: this.state.playerNames[player], gameInstance: this, cards: playerCards });
         }
         // this.buildHands();
         // for (let x = 0; x < this.state.players.length; x++) {
@@ -191,7 +192,7 @@ class Game extends Component {
     }
 
     beginAHand() {
-        this.trickIndex = 0;
+        this.currentTrickIndex = 0;
         this.playATrick();
     }
 
@@ -203,36 +204,44 @@ class Game extends Component {
 
     playATrick() {
         // let one player play a card at a time
-
-        this.state.players[0].takeTurn();
+        this.state.players[0].startTurn();
     }
 
     acceptCard(card) {
-        this.setState({...this.state, trickCards: [...this.state.trickCards, card]});
+        // when card comes in
+        //// add card to trick
+        //// iterate to next player
+        //// reset to 0 if index is the same as players.length
+        if (card.playerId !== this.state.whoseTurnIndex) {
+            // deny card
+            return false;
+        }
+
+        let whoseTurnIndex = this.state.whoseTurnIndex;
+
+        const currentTrickCards = [...this.state.currentTrickCards, card];
+
+        if (currentTrickCards.length === this.state.players.length) {
+            this.endTrick(currentTrickCards);
+        } else {
+            whoseTurnIndex++;
+            this.setState({ ...this.state, currentTrickCards, whoseTurnIndex });
+        }
+
     }
 
-    whoWon() {
-        // need winning player, the high value, winning card
-        let highValue = 0,
-            winningCard = {},
-            winningPlayer = {};
+    endTrick(currentTrickCards) {
+        const trickSortedByValue = currentTrickCards.sort((previous, current) => previous.value < current.value);
 
-        let thisTrickDisplay = document.getElementById('thisHand').querySelectorAll('.trickContainer')[this.trickIndex];
+        const winner = this.state.players[trickSortedByValue[0].playerId].props;
+        const endedTrickObject = { winner: { name: winner.name, id: winner.id }, cards: trickSortedByValue };
 
-        for (let x = 0; x < this.currentTrickCards.length; x++) {
-            if (this.currentTrickCards[x].value > highValue) {
-                highValue = this.currentTrickCards[x].value;
-                winningCard = this.currentTrickCards[x];
-                winningPlayer = this.players[x];
-            }
-        }
-        this.trickEndCardAnimations(winningPlayer);
-        // let winnerTitle = document.createElement('div').innerText = winningPlayer.name;
-        // // winnerTitle.className = 'trickWinner';
-        // thisTrickDisplay.innerHTML += winnerTitle;
-        this.currentTrickCards = [];
-        this.trickIndex++;
-        this.playATrick();
+        this.setState({
+            ...this.state,
+            currentTrickCards: [],
+            whoseTurnIndex: 0,
+            tricksPlayed: [...this.state.tricksPlayed, endedTrickObject]
+        });
     }
 
     trickEndCardAnimations(winner) {
@@ -259,7 +268,7 @@ class Game extends Component {
     }
 
     nextPlayer() {
-        if (this.whoseTurnIndex == this.players.length - 1) {
+        if (this.whoseTurnIndex === this.players.length - 1) {
             this.whoseTurnIndex = 0;
             this.whoWon();
         } else {
@@ -273,6 +282,9 @@ class Game extends Component {
         //     {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}>{player}</div>)}
         // </div>;            
 
+        // can't trigger a player's turn, because the player object isn't in state, only props are
+        // put players only in template due 
+
         return (
             <div id="cardTable">
                 {this.state.isFormVisible ?
@@ -284,12 +296,14 @@ class Game extends Component {
                     : null
                 }
                 <button onClick={this.begin}>Begin</button>
-                <div id="thisHand" className="flex">
-                {this.state.trickCards.map(card => createCard(card))}
+                <div>{this.state.tricksPlayed.map(t => <div className="flex">{t.winner.name}{t.cards.map(card => createCard(card))}</div>)}</div>
+                <div id="this-hand" className="flex">
+                    {this.state.currentTrickCards.map(card => createCard(card))}
                 </div>
                 <div className="flex">
-                    {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player name={player.name} gameInstance={this} cards={player.cards} /></div>)}
+                    {this.state.players.map((player, p) => <div key={`${player.name}-${p}}`}><Player id={player.props.id} name={player.props.name} gameInstance={this} cards={player.props.cards} /></div>)}
                 </div>
+
             </div>
         );
     }
